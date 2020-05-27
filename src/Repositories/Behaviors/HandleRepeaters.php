@@ -10,12 +10,12 @@ use Illuminate\Support\Str;
 trait HandleRepeaters
 {
     /**
-     * All repeaters used in the model, as an array of repeater names: 
+     * All repeaters used in the model, as an array of repeater names:
      * [
      *  'article_repeater',
      *  'page_repeater'
      * ].
-     * 
+     *
      * When only the repeater name is given here, its model and relation will be inferred from the name.
      * Each repeater's detail can also be override with an array
      * [
@@ -29,7 +29,7 @@ trait HandleRepeaters
      * @var string|array(array)|array(mix(string|array))
      */
     protected $repeaters = [];
-    
+
     /**
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
@@ -52,7 +52,7 @@ trait HandleRepeaters
         foreach ($this->getRepeaters() as $repeater) {
             $fields = $this->getFormFieldsForRepeater($object, $fields, $repeater['relation'], $repeater['model'], $repeater['repeaterName']);
         }
-        
+
         return $fields;
     }
 
@@ -271,6 +271,15 @@ trait HandleRepeaters
                 ];
             }
 
+            if (isset($relatedItemFormFields['repeaters'])) {
+                foreach ($relatedItemFormFields['repeaters'] as $childRepeaterName => $childRepeaterItems) {
+                    $fields['repeaters']["blocks-$relation-{$relationItem->id}_$childRepeaterName"] = $childRepeaterItems;
+                    $repeatersFields = array_merge($repeatersFields, $relatedItemFormFields['repeaterFields'][$childRepeaterName]);
+                    $repeatersMedias = array_merge($repeatersMedias, $relatedItemFormFields['repeaterMedias'][$childRepeaterName]);
+                    $repeatersFiles = array_merge($repeatersFiles, $relatedItemFormFields['repeaterFiles'][$childRepeaterName]);
+                    $repeatersBrowsers = array_merge($repeatersBrowsers, $relatedItemFormFields['repeaterBrowsers'][$childRepeaterName]);
+                }
+            }
         }
 
         if (!empty($repeatersMedias) && config('twill.media_library.translated_form_fields', false)) {
@@ -291,7 +300,7 @@ trait HandleRepeaters
     }
 
     /**
-     * Get all repeaters' model and relation from the $repeaters attribute. 
+     * Get all repeaters' model and relation from the $repeaters attribute.
      * The missing information will be inferred by convention of Twill.
      *
      * @return Illuminate\Support\Collection
