@@ -10,14 +10,14 @@
       <a17-table-cell-generic v-else v-bind="currentComponentProps(col)" @editInPlace="editInPlace" @update="tableCellUpdate"/>
     </span>
     <span class="nested-item__cell nested-item__cell--actions">
-      <a17-table-cell-actions v-bind="currentComponentProps()" @editInPlace="editInPlace" @update="tableCellUpdate" @restoreRow=" restoreRow" @deleteRow="deleteRow"/>
+      <a17-table-cell-actions v-bind="currentComponentProps()" @editInPlace="editInPlace" @update="tableCellUpdate" @restoreRow=" restoreRow" @deleteRow="deleteRow" @duplicateRow="duplicateRow"/>
     </span>
   </div>
 </template>
 
 <script>
   import { DatatableRowMixin } from '@/mixins'
-  import { default as TableCellComponents } from '@/components/table/tableCell'
+  import TableCellComponents from '@/components/table/tableCell'
 
   export default {
     name: 'A17-nested-item',
@@ -29,7 +29,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .nested-item {
     position: relative;

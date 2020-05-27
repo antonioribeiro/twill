@@ -63,6 +63,7 @@ return [
      */
     'support_subdomain_admin_routing' => false,
     'admin_app_subdomain' => 'admin',
+    'active_subdomain' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -74,6 +75,14 @@ return [
      */
     'admin_route_patterns' => [
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Prevent the routing system to duplicate prefix and module on route names
+    |--------------------------------------------------------------------------
+    |
+     */
+    'allow_duplicates_on_route_names' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -90,7 +99,7 @@ return [
     | Twill default tables naming configuration
     |--------------------------------------------------------------------------
     |
-    | TODO: In Twill 2.0, all tables will be prefixed by `twill_`.
+    | TODO: In Twill 3.0, all tables will be prefixed by `twill_`.
     |
      */
     'users_table' => 'twill_users',
@@ -136,4 +145,28 @@ return [
     'templates_on_frontend_domain' => false,
 
     'google_maps_api_key' => env('GOOGLE_MAPS_API_KEY'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Twill FE Application configuration
+    |--------------------------------------------------------------------------
+    |
+     */
+    'js_namespace' => 'TWILL',
+    'dev_mode' => false,
+    'dev_mode_url' => env('TWILL_DEV_MODE_URL', 'http://localhost:8080'),
+    'public_directory' => env('TWILL_ASSETS_DIR', 'assets/admin'),
+    'manifest_file' => 'twill-manifest.json',
+    'vendor_path' => 'vendor/area17/twill',
+    'custom_components_resource_path' => 'assets/js/components',
+    'build_timeout' => 300,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Twill app locale
+    |--------------------------------------------------------------------------
+    |
+     */
+    'locale' => 'en',
+    'fallback_locale' => 'en',
 ];

@@ -4,6 +4,7 @@ namespace A17\Twill;
 
 use A17\Twill\Http\Controllers\Front\GlideController;
 use A17\Twill\Http\Middleware\Impersonate;
+use A17\Twill\Http\Middleware\Localization;
 use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
@@ -53,6 +54,7 @@ class RouteServiceProvider extends ServiceProvider
             'twill_auth:twill_users',
             'impersonate',
             'validateBackHistory',
+            'localization',
         ];
 
         $supportSubdomainRouting = config('twill.support_subdomain_admin_routing', false);
@@ -153,6 +155,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::aliasMiddleware('twill_auth', \Illuminate\Auth\Middleware\Authenticate::class);
         Route::aliasMiddleware('twill_guest', RedirectIfAuthenticated::class);
         Route::aliasMiddleware('validateBackHistory', ValidateBackHistory::class);
+        Route::aliasMiddleware('localization', Localization::class);
     }
 
     /**
@@ -187,7 +190,7 @@ class RouteServiceProvider extends ServiceProvider
                 return ucfirst(Str::singular($s));
             }, $slugs));
 
-            $customRoutes = $defaults = ['reorder', 'publish', 'bulkPublish', 'browser', 'feature', 'bulkFeature', 'tags', 'preview', 'restore', 'bulkRestore', 'forceDelete', 'bulkForceDelete', 'bulkDelete', 'restoreRevision'];
+            $customRoutes = $defaults = ['reorder', 'publish', 'bulkPublish', 'browser', 'feature', 'bulkFeature', 'tags', 'preview', 'restore', 'bulkRestore', 'forceDelete', 'bulkForceDelete', 'bulkDelete', 'restoreRevision', 'duplicate'];
 
             if (isset($options['only'])) {
                 $customRoutes = array_intersect($defaults, (array) $options['only']);
@@ -195,13 +198,34 @@ class RouteServiceProvider extends ServiceProvider
                 $customRoutes = array_diff($defaults, (array) $options['except']);
             }
 
+            // Get the current route groups
+            $routeGroups = Route::getGroupStack() ?? [];
+
+            // Get the name prefix of the last group
+            $lastRouteGroupName = end($routeGroups)['as'] ?? '';
+
             $groupPrefix = trim(str_replace('/', '.', Route::getLastGroupPrefix()), '.');
 
             if (!empty(config('twill.admin_app_path'))) {
                 $groupPrefix = ltrim(str_replace(config('twill.admin_app_path'), '', $groupPrefix), '.');
             }
 
-            $customRoutePrefix = !empty($groupPrefix) ? "{$groupPrefix}.{$slug}" : "{$slug}";
+            // Check if name will be a duplicate, and prevent if needed/allowed
+            if (!empty($groupPrefix) &&
+                (
+                    blank($lastRouteGroupName) ||
+                    config('twill.allow_duplicates_on_route_names', true) ||
+                    (!Str::endsWith($lastRouteGroupName, ".{$groupPrefix}."))
+                )
+            ) {
+                $customRoutePrefix = "{$groupPrefix}.{$slug}";
+                $resourceCustomGroupPrefix = "{$groupPrefix}.";
+            } else {
+                $customRoutePrefix = $slug;
+
+                // Prevent Laravel from generating route names with duplication
+                $resourceCustomGroupPrefix = '';
+            }
 
             foreach ($customRoutes as $route) {
                 $routeSlug = "{$prefixSlug}/{$route}";
@@ -219,6 +243,10 @@ class RouteServiceProvider extends ServiceProvider
                     Route::put($routeSlug, $mapping);
                 }
 
+                if (in_array($route, ['duplicate'])) {
+                    Route::put($routeSlug . "/{id}", $mapping);
+                }
+
                 if (in_array($route, ['preview'])) {
                     Route::put($routeSlug . "/{id}", $mapping);
                 }
@@ -229,8 +257,7 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             if ($resource) {
-                $customRoutePrefix = !empty($groupPrefix) ? "{$groupPrefix}." : "";
-                Route::group(['as' => $customRoutePrefix], function () use ($slug, $className, $resource_options) {
+                Route::group(['as' => $resourceCustomGroupPrefix], function () use ($slug, $className, $resource_options) {
                     Route::resource($slug, "{$className}Controller", $resource_options);
                 });
             }

@@ -47,7 +47,8 @@
             published: status.published && (row.published || false),
             canPublish: status.canPublish && row.hasOwnProperty('published'),
             deleted: status.deleted && (row.deleted || false),
-            canDelete: status.canDelete && row.delete !== null
+            canDelete: status.canDelete && row.delete !== null,
+            canDestroy: status.canDestroy && row.hasOwnProperty('destroyable')
           }
         }, {
           featured: true,
@@ -55,25 +56,26 @@
           published: true,
           canPublish: true,
           deleted: true,
-          canDelete: true
+          canDelete: true,
+          canDestroy: true
         })
       })
     },
     methods: {
       bulkPublishable: function ($inverse = false) {
-        return window.CMS_URLS.bulkPublish !== '' && this.bulkStatus.canPublish && ($inverse ? this.bulkStatus.published : !this.bulkStatus.published) && !this.bulkStatus.deleted
+        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkPublish !== '' && this.bulkStatus.canPublish && ($inverse ? this.bulkStatus.published : !this.bulkStatus.published) && !this.bulkStatus.deleted
       },
       bulkFeaturable: function ($inverse = false) {
-        return window.CMS_URLS.bulkFeature !== '' && this.bulkStatus.canFeature && ($inverse ? this.bulkStatus.featured : !this.bulkStatus.featured) && !this.bulkStatus.deleted
+        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkFeature !== '' && this.bulkStatus.canFeature && ($inverse ? this.bulkStatus.featured : !this.bulkStatus.featured) && !this.bulkStatus.deleted
       },
       bulkDeletable: function () {
-        return window.CMS_URLS.bulkDelete !== '' && !this.bulkStatus.deleted && this.bulkStatus.canDelete
+        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkDelete !== '' && !this.bulkStatus.deleted && this.bulkStatus.canDelete
       },
       bulkRestorable: function () {
-        return window.CMS_URLS.bulkRestore !== '' && this.bulkStatus.deleted
+        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkRestore !== '' && this.bulkStatus.deleted
       },
       bulkDestroyable: function () {
-        return window.CMS_URLS.bulkDestroy !== '' && this.bulkStatus.deleted
+        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkDestroy !== '' && this.bulkStatus.deleted && this.bulkStatus.canDestroy
       },
       clearBulkSelect: function () {
         this.$store.commit(DATATABLE.REPLACE_DATATABLE_BULK, [])
@@ -95,8 +97,8 @@
         this.$store.dispatch(ACTIONS.BULK_EXPORT)
       },
       bulkDelete: function () {
-        if (this.$root.$refs.warningDestroyRow) {
-          this.$root.$refs.warningDestroyRow.open(() => {
+        if (this.$root.$refs.warningDeleteRow) {
+          this.$root.$refs.warningDeleteRow.open(() => {
             this.$store.dispatch(ACTIONS.BULK_DELETE)
           })
         } else {
@@ -120,7 +122,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   // .bulkEditor {
   // }

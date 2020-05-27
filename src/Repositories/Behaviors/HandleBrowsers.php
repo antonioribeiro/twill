@@ -2,17 +2,18 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Behaviors\HasMedias;
 use Illuminate\Support\Str;
 
 trait HandleBrowsers
 {
     /**
-     * All browsers used in the model, as an array of browser names: 
+     * All browsers used in the model, as an array of browser names:
      * [
      *  'books',
      *  'publications'
      * ].
-     * 
+     *
      * When only the browser name is given here, its rest information will be inferred from the name.
      * Each browser's detail can also be override with an array
      * [
@@ -58,9 +59,11 @@ trait HandleBrowsers
      * @param array $fields
      * @param string $relationship
      * @param string $positionAttribute
+     * @param string|null $browserName
+     * @param array $pivotAttributes
      * @return void
      */
-    public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $browserName = null)
+    public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $browserName = null, $pivotAttributes = [])
     {
         $browserName = $browserName ?? $relationship;
         $fieldsHasElements = isset($fields['browsers'][$browserName]) && !empty($fields['browsers'][$browserName]);
@@ -68,7 +71,7 @@ trait HandleBrowsers
         $relatedElementsWithPosition = [];
         $position = 1;
         foreach ($relatedElements as $relatedElement) {
-            $relatedElementsWithPosition[$relatedElement['id']] = [$positionAttribute => $position++];
+            $relatedElementsWithPosition[$relatedElement['id']] = [$positionAttribute => $position++] + $pivotAttributes;
         }
 
         $object->$relationship()->sync($relatedElementsWithPosition);
@@ -141,8 +144,8 @@ trait HandleBrowsers
         })->values()->toArray();
     }
 
-        /**
-     * Get all browser' detail info from the $browsers attribute. 
+    /**
+     * Get all browser' detail info from the $browsers attribute.
      * The missing information will be inferred by convention of Twill.
      *
      * @return Illuminate\Support\Collection
@@ -151,11 +154,14 @@ trait HandleBrowsers
     {
         return collect($this->browsers)->map(function ($browser, $key) {
             $browserName = is_string($browser) ? $browser : $key;
+            $moduleName = !empty($browser['moduleName']) ? $browser['moduleName'] : $this->inferModuleNameFromBrowserName($browserName);
+
             return [
                 'relation' => !empty($browser['relation']) ? $browser['relation'] : $this->inferRelationFromBrowserName($browserName),
                 'routePrefix' => isset($browser['routePrefix']) ? $browser['routePrefix'] : null,
                 'titleKey' => !empty($browser['titleKey']) ? $browser['titleKey'] : 'title',
-                'moduleName' => isset($browser['moduleName']) ? $browser['moduleName'] : null,
+                'moduleName' => $moduleName,
+                'model' => !empty($browser['model']) ? $browser['model'] : $this->inferModelFromModuleName($moduleName),
                 'positionAttribute' => !empty($browser['positionAttribute']) ? $browser['positionAttribute'] : 'position',
                 'browserName' => $browserName,
             ];
@@ -172,5 +178,30 @@ trait HandleBrowsers
     protected function inferRelationFromBrowserName(string $browserName): string
     {
         return Str::camel($browserName);
+    }
+
+    /**
+     * The model name should be singular upper camel case, ex. User, ArticleType
+     *
+     * @param  string $moduleName
+     *
+     * @return string
+     */
+    protected function inferModelFromModuleName(string $moduleName): string
+    {
+        return Str::studly(Str::singular($moduleName));
+    }
+
+    /**
+     * The module name should be plural lower camel case
+     *
+     * @param  mixed $string
+     * @param  mixed $browserName
+     *
+     * @return string
+     */
+    protected function inferModuleNameFromBrowserName(string $browserName): string
+    {
+        return Str::camel(Str::plural($browserName));
     }
 }

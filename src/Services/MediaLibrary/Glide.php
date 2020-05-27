@@ -32,12 +32,12 @@ class Glide implements ImageServiceInterface
     protected $request;
 
     /**
-     * @var League\Glide\Server
+     * @var \League\Glide\Server
      */
     private $server;
 
     /**
-     * @var UrlBuilder
+     * @var \League\Glide\Urls\UrlBuilder
      */
     private $urlBuilder;
 
@@ -52,8 +52,17 @@ class Glide implements ImageServiceInterface
         $this->app = $app;
         $this->request = $request;
 
+        $baseUrlHost = $this->config->get(
+            'twill.glide.base_url',
+            $this->request->getScheme() . '://' . str_replace(
+                ['http://', 'https://'],
+                '',
+                $this->config->get('app.url')
+            )
+        );
+
         $baseUrl = join('/', [
-            rtrim($this->config->get('twill.glide.base_url'), '/'),
+            rtrim($baseUrlHost, '/'),
             ltrim($this->config->get('twill.glide.base_path'), '/'),
         ]);
 
@@ -75,7 +84,7 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $path
-     * @return StreamedResponse
+     * @return mixed
      */
     public function render($path)
     {
@@ -94,7 +103,13 @@ class Glide implements ImageServiceInterface
     public function getUrl($id, array $params = [])
     {
         $defaultParams = config('twill.glide.default_params');
-        return $this->urlBuilder->getUrl($id, Str::endsWith($id, '.svg') ? [] : array_replace($defaultParams, $params));
+        $addParamsToSvgs = config('twill.glide.add_params_to_svgs', false);
+
+        if (!$addParamsToSvgs && Str::endsWith($id, '.svg')) {
+            return $this->urlBuilder->getUrl($id);
+        }
+
+        return $this->urlBuilder->getUrl($id, array_replace($defaultParams, $params));
     }
 
     /**
@@ -179,7 +194,7 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @return array|null
+     * @return string
      */
     public function getRawUrl($id)
     {
