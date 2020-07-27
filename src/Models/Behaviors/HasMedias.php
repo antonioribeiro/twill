@@ -32,7 +32,7 @@ trait HasMedias
             'ratio',
             'metadatas',
         ], config('twill.media_library.translated_form_fields', false) ? ['locale'] : []))
-            ->withTimestamps()->orderBy(config('twill.mediables_table', 'twill_mediables') . '.id', 'asc');
+                    ->withTimestamps()->orderBy(config('twill.mediables_table', 'twill_mediables') . '.id', 'asc');
     }
 
     private function findMedia($role, $crop = "default")
@@ -84,7 +84,7 @@ trait HasMedias
             return null;
         }
 
-        return ImageService::getTransparentFallbackUrl();
+        return $this->getTransparentFallbackImageUrl();
     }
 
     public function images($role, $crop = "default", $params = [])
@@ -206,15 +206,20 @@ trait HasMedias
         $media = $this->findMedia($role, $crop);
 
         if ($media) {
-            return $media->pivot->lqip_data ?? ImageService::getTransparentFallbackUrl();
+            return $media->pivot->lqip_data ?? $this->getTransparentFallbackImageUrl();
         }
 
         if ($has_fallback) {
             return null;
         }
 
-        return ImageService::getTransparentFallbackUrl();
+        return $this->getTransparentFallbackImageUrl();
 
+    }
+
+    public function getTransparentFallbackImageUrl()
+    {
+        return config('twill.media_library.fallback_image_placeholder_url') ?? ImageService::getTransparentFallbackUrl();
     }
 
     public function socialImage($role, $crop = "default", $params = [], $has_fallback = false)
@@ -247,7 +252,7 @@ trait HasMedias
             return $this->image(null, null, $params, true, true, $media) ?? ImageService::getTransparentFallbackUrl($params);
         }
 
-        return ImageService::getTransparentFallbackUrl($params);
+        return $this->getTransparentFallbackImageUrl();
     }
 
     public function imageObjects($role, $crop = "default")
