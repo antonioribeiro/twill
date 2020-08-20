@@ -27,15 +27,23 @@ trait HasSlug
 
     public function slugs()
     {
-        return $this->hasMany(
-            config('twill.namespace') . "\Models\Slugs\\" . $this->getSlugClassName()
-        );
+        return $this->hasMany($this->getSlugModelClass());
     }
 
     public function getSlugClass()
     {
-        $slugClassName = config('twill.namespace') . "\Models\Slugs\\" . $this->getSlugClassName();
-        return new $slugClassName;
+        return new $this->getSlugModelClass();
+    }
+
+    public function getSlugModelClass()
+    {
+        $slug = config('twill.namespace') . "\Models\Slugs\\" . $this->getSlugClassName();
+
+        if (@class_exists()) {
+            return $slug;
+        }
+
+        return $this->getCapsuleSlugClass(class_basename($this));
     }
 
     protected function getSlugClassName()
