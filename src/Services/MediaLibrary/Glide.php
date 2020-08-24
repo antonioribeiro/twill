@@ -7,6 +7,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use A17\Twill\Services\Cache\Glide as GlideCache;
 use League\Glide\Responses\LaravelResponseFactory;
 use League\Glide\ServerFactory;
 use League\Glide\Signatures\SignatureFactory;
@@ -69,7 +70,7 @@ class Glide implements ImageServiceInterface
         $this->server = ServerFactory::create([
             'response' => new LaravelResponseFactory($this->request),
             'source' => $this->config->get('twill.glide.source'),
-            'cache' => $this->config->get('twill.glide.cache'),
+            'cache' => $this->getGlideCache(),
             'cache_path_prefix' => $this->config->get('twill.glide.cache_path_prefix'),
             'base_url' => $baseUrl,
             'presets' => $this->config->get('twill.glide.presets', []),
@@ -272,5 +273,10 @@ class Glide implements ImageServiceInterface
         }
 
         return [];
+    }
+
+    public function getGlideCache()
+    {
+        return app(GlideCache::class)->getStore($this->config->get('twill.glide.cache'));
     }
 }
