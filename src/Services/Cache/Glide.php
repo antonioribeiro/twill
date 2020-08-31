@@ -21,10 +21,8 @@ class Glide
 
     public function getStore($store)
     {
-        if ($store === 'laravel') {
-            return $this->laravelPsr6Adapter();
-        }
-
-        return $store;
+        return $store === 'laravel'
+            ? $this->laravelPsr6Adapter()
+            : $store;
     }
 }
