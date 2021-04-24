@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories;
 
+use A17\Twill\Models\Model;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
@@ -853,6 +854,7 @@ abstract class ModuleRepository
                 $morphedModel = Relation::getMorphedModel($relation);
                 if (class_exists($morphedModel) && (new $morphedModel) instanceof Model) {
                     $modelOrRepository = (new \ReflectionClass($morphedModel))->getShortName();
+                    $model = (new \ReflectionClass($morphedModel))->getShortName();
                 } else {
                     $modelOrRepository = ucfirst(Str::singular($relation));
                 }
@@ -881,7 +883,7 @@ abstract class ModuleRepository
 
         return App::make($capsule['repository']);
     }
-
+    
     /**
      * @param string|null $method
      * @return array
