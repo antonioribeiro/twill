@@ -56,15 +56,6 @@ class CapsulesServiceProvider extends RouteServiceProvider
         $this->loadMigrationsFrom($capsule['migrations_dir']);
     }
 
-    public function map(Router $router)
-    {
-        $this->manager
-            ->getCapsuleList()
-            ->each(function ($capsule) use ($router) {
-                $this->registerCapsuleRoutes($router, $capsule);
-            });
-    }
-
     public function registerViewPaths()
     {
         $this->app->make('view')->addLocation(config('twill.capsules.path'));
@@ -94,11 +85,11 @@ class CapsulesServiceProvider extends RouteServiceProvider
         );
 
         $this->assertFileExists(
-            twill_path('Twill/Capsules/Cars/app/Data/Models/Car.php')
+            twill_path('Twill/Capsules/Cars/app/Models/Car.php')
         );
 
         $this->assertIsObject(
-            $this->app->make('App\Twill\Capsules\Cars\Data\Models\Car')
+            $this->app->make('App\Twill\Capsules\Cars\Models\Car')
         );
     }
 }

@@ -72,7 +72,7 @@ class CapsulesTest extends TestCase
     protected $capsuleModel;
     protected $capsuleClassName;
     protected $capsuleModelName;
-    protected $mananger;
+    protected $manager;
 
     public function setUp(): void
     {
@@ -129,7 +129,7 @@ class CapsulesTest extends TestCase
     public function testCapsuleProviderWasRegistered()
     {
         class_exists(
-            "App\Twill\Capsules\{$this->capsuleClassName}\Data\Models\{$this->capsuleModelName}"
+            "App\Twill\Capsules\{$this->capsuleClassName}\Models\{$this->capsuleModelName}"
         );
 
         class_exists('A17\Twill\Services\Modules\HasModules');
@@ -287,7 +287,8 @@ class CapsulesTest extends TestCase
 
         $this->registerCapsuleRoutes(
             app(Router::class),
-            $this->getCapsuleByModule($this->capsuleName)
+            $this->getCapsuleByModule($this->capsuleName),
+            $this->manager
         );
 
         $this->migrate();
@@ -313,6 +314,6 @@ class CapsulesTest extends TestCase
 
         $this->capsuleModelName = Str::singular($this->capsuleClassName);
 
-        $this->capsuleModel = "App\Twill\Capsules\\{$this->capsuleClassName}\Data\Models\\{$this->capsuleModelName}";
+        $this->capsuleModel = "App\Twill\Capsules\\{$this->capsuleClassName}\\Models\\{$this->capsuleModelName}";
     }
 }
