@@ -47,6 +47,7 @@
                     custom-title="{{ $customTitle ?? '' }}"
                     custom-permalink="{{ $customPermalink ?? '' }}"
                     custom-localized-permalinkbase="{{ $localizedPermalinkBase ?? '' }}"
+                    localized-custom-permalink="{{ $localizedCustomPermalink ?? '' }}"
                     slot="title"
                     @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif
                 >
