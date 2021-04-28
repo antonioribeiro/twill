@@ -46,6 +46,7 @@
                     :editable-title="{{ json_encode($editableTitle ?? true) }}"
                     custom-title="{{ $customTitle ?? '' }}"
                     custom-permalink="{{ $customPermalink ?? '' }}"
+                    custom-localized-permalinkbase="{{ $localizedPermalinkBase ?? '' }}"
                     slot="title"
                     @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif
                 >
