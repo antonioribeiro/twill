@@ -70,6 +70,14 @@
       customPermalink: {
         type: String,
         default: ''
+      },
+      customLocalizedPermalinkbase: {
+        type: String,
+        default: ''
+      },
+      localizedCustomPermalink: {
+        type: String,
+        default: ''
       }
     },
     data: function () {
@@ -91,12 +99,12 @@
         return this.title.length > 0 ? 'update' : 'create'
       },
       fullUrl: function () {
-        return this.customPermalink || this.baseUrl
+        return this.customlink || this.baseUrl
           .replace('{language}', this.currentLocale.value)
           .replace('{preview}/', this.published ? '' : 'admin-preview/') + this.permalink
       },
       visibleUrl: function () {
-        return this.customPermalink || this.baseUrl
+        return this.customlink || this.baseUrl
           .replace('{language}', this.currentLocale.value)
           .replace('{preview}/', '') + this.permalink
       },
@@ -106,8 +114,13 @@
         const titleValue = typeof title === 'string' ? title : title[this.currentLocale.value]
         return titleValue || this.warningMessage
       },
+      customlink: function () {
+        const localizedCustomPermalink = this.localizedCustomPermalink.length > 0 ? JSON.parse(this.localizedCustomPermalink) : {}
+        return Object.keys(localizedCustomPermalink).length > 0 ? localizedCustomPermalink[this.currentLocale.value] : (this.customPermalink ? this.customPermalink : false)
+      },
       permalink: function () {
-        return this.fieldValueByName('slug')[this.currentLocale.value]
+        const customLocalizedPermalinkbase = this.customLocalizedPermalinkbase.length > 0 ? JSON.parse(this.customLocalizedPermalinkbase) : {}
+        return Object.keys(customLocalizedPermalinkbase).length > 0 ? customLocalizedPermalinkbase[this.currentLocale.value].concat(this.fieldValueByName('slug')[this.currentLocale.value]) : this.fieldValueByName('slug')[this.currentLocale.value]
       },
       ...mapState({
         baseUrl: state => state.form.baseUrl,
