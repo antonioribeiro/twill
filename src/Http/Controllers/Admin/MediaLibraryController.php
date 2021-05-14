@@ -163,9 +163,9 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         $filename = sanitizeFilename($originalFilename);
 
-        $fileDirectory = $request->input('unique_folder_name');
+        $fileDirectory = $this->makeImageFolderName($request);
 
-        $uuid = $request->input('unique_folder_name') . '/' . $filename;
+        $uuid = $fileDirectory . '/' . $filename;
 
         if ($this->config->get('twill.media_library.prefix_uuid_with_local_path', false)) {
             $prefix = trim($this->config->get('twill.media_library.local_path'), '/ ') . '/';
@@ -179,7 +179,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         $filePath = Storage::disk($disk)->path($fileDirectory . '/' . $filename);
 
-        list($w, $h) = getimagesize($filePath);
+        [$w, $h] = getimagesize($filePath);
 
         $fields = [
             'uuid' => $uuid,
@@ -339,6 +339,25 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
      */
     private function shouldReplaceMedia($id)
     {
-        return $this->repository->whereId($id)->exists();
+        return filled($id) && $id !== "null"
+            ? $this->repository->whereId($id)->exists()
+            : false;
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return mixed
+     */
+    private function makeImageFolderName(Request $request)
+    {
+        if (!$this->config->get('twill.media_library.deduplicate')) {
+            return $request->input('unique_folder_name');
+        }
+
+        return sha1(
+            file_get_contents(
+                $request->file('qqfile')->getRealPath()
+            )
+        );
     }
 }

@@ -27,4 +27,5 @@ return [
     'filesize_limit' => env('FILE_LIBRARY_FILESIZE_LIMIT', 50),
     'allowed_extensions' => [],
     'prefix_uuid_with_local_path' => false,
+    'deduplicate' => false,
 ];
