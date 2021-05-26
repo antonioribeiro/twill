@@ -339,25 +339,6 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
      */
     private function shouldReplaceMedia($id)
     {
-        return filled($id) && $id !== "null"
-            ? $this->repository->whereId($id)->exists()
-            : false;
-    }
-
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @return mixed
-     */
-    private function makeImageFolderName(Request $request)
-    {
-        if (!$this->config->get('twill.media_library.deduplicate')) {
-            return $request->input('unique_folder_name');
-        }
-
-        return sha1(
-            file_get_contents(
-                $request->file('qqfile')->getRealPath()
-            )
-        );
+        return $id == 'null' ? false : $this->repository->whereId($id)->exists();
     }
 }
