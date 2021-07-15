@@ -19,12 +19,12 @@ trait HasPosition
 
     protected function getCurrentLastPosition()
     {
-        return ((int) static::max('position'));
+        return ((int) static::max("{$this->getTable()}.position"));
     }
 
     public function scopeOrdered($query)
     {
-        return $query->orderBy('position');
+        return $query->orderBy("{$this->getTable()}.position");
     }
 
     public static function setNewOrder($ids, $startOrder = 1)
