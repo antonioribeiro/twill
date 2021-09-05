@@ -74,13 +74,13 @@
       "providers": [
         "A17\\Twill\\TwillServiceProvider"
       ]
+    },
+    "installer-paths": {
+      "app/Twill/Capsules/vendor/{$name}": ["type:twill-capsule"]
     }
   },
   "minimum-stability": "stable",
   "config": {
     "sort-packages": true
-  },
-  "installer-paths": {
-      "app/Twill/Capsules/vendor/{$name}": ["type:twill-capsule"]
   }
 }
