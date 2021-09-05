@@ -76,7 +76,7 @@
       ]
     },
     "installer-paths": {
-      "app/Twill/Capsules/vendor/{$name}": ["type:twill-capsule"]
+      "app/Twill/Capsules/Vendor/{$name}": ["type:twill-capsule"]
     }
   },
   "minimum-stability": "stable",
