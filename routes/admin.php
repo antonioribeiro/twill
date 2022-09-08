@@ -1,7 +1,7 @@
 <?php
 
+use A17\Twill\Facades\Route;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Route;
 
 if (config('twill.enabled.users-management')) {
     Route::module('users', ['except' => ['sort', 'feature']]);

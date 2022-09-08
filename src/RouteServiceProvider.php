@@ -14,7 +14,7 @@ use A17\Twill\Services\MediaLibrary\Glide;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Route;
+use A17\Twill\Facades\Route;
 use Illuminate\Support\Str;
 
 class RouteServiceProvider extends ServiceProvider
