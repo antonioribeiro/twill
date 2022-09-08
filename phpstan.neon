@@ -32,3 +32,6 @@ parameters:
     # Not needed
     - src/Rector/LaravelAwareRectorRule.php
     - src/DuskServiceProvider.php
+
+  bootstrapFiles:
+        - vendor/rector/rector/vendor/scoper-autoload.php
