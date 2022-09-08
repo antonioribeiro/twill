@@ -5,6 +5,7 @@ namespace A17\Twill\Services\Cloud;
 use Aws\S3\S3Client;
 use Illuminate\Support\Str;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
+use League\Flysystem\AwsS3V3\AwsS3V3Adapter;
 use League\Flysystem\Filesystem;
 
 class Aws
@@ -15,7 +16,9 @@ class Aws
 
         $client = new S3Client($config);
 
-        $adapter = new AwsS3Adapter($client, $config['bucket'], $config['root']);
+        $class = $this->getS3AdapterClass();
+
+        $adapter = new $class($client, $config['bucket'], $config['root']);
 
         return new Filesystem($adapter);
     }
@@ -52,5 +55,12 @@ class Aws
         }
 
         return env("{$env1}_{$envSuffix}", env("{$env2}_{$envSuffix}", $default));
+    }
+
+    public function getS3AdapterClass(): string
+    {
+        return class_exists(AwsS3Adapter::class)
+            ? AwsS3Adapter::class
+            : AwsS3V3Adapter::class;
     }
 }
