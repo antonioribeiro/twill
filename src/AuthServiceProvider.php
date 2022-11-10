@@ -119,7 +119,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // As an admin, I can edit users, except superadmins
         // As a non-admin, I can edit myself only
-        $this->define('edit-user', function ($user, $editedUser = null) {
+        $this->define('edit-user', function (User $user, User $editedUser = null) {
             return $this->authorize($user, function ($user) use ($editedUser) {
                 return ($this->userHasRole($user, [UserRole::ADMIN]) || $user->id == $editedUser->id)
                     && ($editedUser ? $editedUser->role !== self::SUPERADMIN : true);

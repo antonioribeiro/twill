@@ -850,7 +850,6 @@ class ModuleMake extends Command
     /**
      * Creates a basic routes file for the Capsule.
      *
-     * @param string $moduleName
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function createCapsuleRoutes(): void
@@ -873,7 +872,6 @@ class ModuleMake extends Command
     /**
      * Creates a new capsule database seed file.
      *
-     * @param string $moduleName
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     private function createCapsuleSeed(): void

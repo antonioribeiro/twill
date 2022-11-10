@@ -33,10 +33,6 @@ class SyncLang extends Command
 
     protected $langStubPath = __DIR__ . '/stubs/lang.stub';
 
-    /**
-     * @param ValidatorFactory $validatorFactory
-     * @param Config $config
-     */
     public function __construct(Filesystem $files)
     {
         parent::__construct();

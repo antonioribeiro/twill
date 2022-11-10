@@ -17,6 +17,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
+/**
+ * @method \Illuminate\Database\Eloquent\Relations\MorphMany blocks()
+ * @method Model|Builder mine()
+ */
 abstract class Model extends BaseModel implements TaggableInterface, TwillModelContract, TwillSchedulableModel
 {
     use HasPresenter;

@@ -17,6 +17,8 @@ use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Analytics;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
+use A17\Twill\Models\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class DashboardController extends Controller
 {
@@ -465,6 +467,7 @@ class DashboardController extends Controller
         })->map(function ($module) {
             $repository = $this->getRepository($module['name'], $module['repository'] ?? null);
 
+            /** @var Model|Builder $query */
             $query = $repository->draft()->limit(3)->latest();
 
             if ($repository->hasBehavior('revisions')) {

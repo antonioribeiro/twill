@@ -32,7 +32,7 @@ class ListBlocks extends Command
     /**
      * Blocks collection.
      *
-     * @var A17\Twill\Services\Blocks\BlockCollection
+     * @var \A17\Twill\Services\Blocks\BlockCollection
      */
     public $blockCollection;
 

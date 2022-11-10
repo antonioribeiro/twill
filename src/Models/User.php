@@ -24,6 +24,19 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Session;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
+/**
+ * @property string $name
+ * @property string $email
+ * @property string $role
+ * @property bool $published
+ * @property string $title
+ * @property string $description
+ * @property int $role_id
+ * @property bool $google_2fa_enabled
+ * @property string $google_2fa_secret
+ * @property string $language
+
+ */
 class User extends AuthenticatableContract implements TwillModelContract
 {
     use Authenticatable;

@@ -151,12 +151,7 @@ if (! function_exists('make_twill_directory')) {
 }
 
 if (! function_exists('twill_put_stub')) {
-    /**
-     * @param string $path
-     * @param bool $recursive
-     * @param \Illuminate\Filesystem\Filesystem|null $fs
-     */
-    function twill_put_stub($path, $stub, $fs = null)
+    function twill_put_stub(string $path, string $stub, Filesystem $fs = null): void
     {
         $fs = filled($fs)
         ? $fs
@@ -175,12 +170,7 @@ if (! function_exists('twill_put_stub')) {
 }
 
 if (! function_exists('fix_directory_separator')) {
-    /**
-     * @param string $path
-     * @param bool $recursive
-     * @param int $mode
-     */
-    function fix_directory_separator($path)
+    function fix_directory_separator(string $path): string
     {
         return str_replace(
             '\\',

@@ -23,13 +23,7 @@ trait HandlesStubs
         return $stub;
     }
 
-    /**
-     * @param array $variables
-     * @param string $stub
-     * @param array|null $delimiters
-     * @return string
-     */
-    public function replaceConditionals($conditionals, $stub, $delimiters = null)
+    public function replaceConditionals(array $conditionals, string $stub, array|null $delimiters = null): string
     {
         $delimiters = $delimiters ?: ['{{', '}}'];
 

@@ -29,9 +29,6 @@ class BlockMake extends Command
      */
     protected $blockMaker;
 
-    /**
-     * @param \A17\Twill\Services\Blocks\BlockMaker
-     */
     public function __construct(BlockMaker $blockMaker)
     {
         parent::__construct();
@@ -47,10 +44,9 @@ class BlockMake extends Command
     /**
      * Executes the console command.
      *
-     * @return mixed
      * @throws \Exception
      */
-    public function handle()
+    public function handle(): mixed
     {
         $generateView = $this->confirm('Should we also generate a view file for rendering the block?');
 

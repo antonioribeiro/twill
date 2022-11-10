@@ -3,7 +3,7 @@
 namespace A17\Twill\Commands\Traits;
 
 /**
- * @method void publishConfig;
+ * @method void publishConfig()
  */
 trait HandlesPresets
 {

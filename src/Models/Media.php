@@ -7,6 +7,14 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
+/**
+ * @property string $uuid
+ * @property string $filename
+ * @property string $alt_text
+ * @property string $caption
+ * @property int $width
+ * @property int $height
+ */
 class Media extends Model
 {
     public $timestamps = true;

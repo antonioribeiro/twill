@@ -27,6 +27,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use ReflectionClass;
 
+/**
+ * @method static Model|Builder published() Get published roles
+ * @method static Model|Builder draft() Get draft roles
+ * @method static Model|Builder onlyTrashed() Get trashed roles
+ */
 abstract class ModuleRepository
 {
     use HandleDates;

@@ -12,7 +12,8 @@ parameters:
 
   # 8 is the highest level
   # Todo: Increment when feeling brave.
-  level: 1
+  level: 2
+
 
   databaseMigrationsPath:
     - migrations/default
@@ -35,3 +36,10 @@ parameters:
 
   bootstrapFiles:
         - vendor/rector/rector/vendor/scoper-autoload.php
+
+  universalObjectCratesClasses:
+    - App\Models\Model
+    - A17\Twill\Models\Model
+    - Illuminate\Database\Eloquent\Model
+    - Illuminate\Database\Eloquent\Builder
+    - Illuminate\Filesystem\FilesystemAdapter
