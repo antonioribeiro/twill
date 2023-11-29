@@ -44,7 +44,7 @@ class GenerateDocsCommand extends Command
 
     public function handle(): void
     {
-        config()->set('torchlight.token', env('TORCHLIGHT_API_TOKEN'));
+        config()->set('torchlight.token', 'torch_6ujUfHblRutt0RVgnUcdR59qGIv5XjL2D3YfYtR6');
         config()->set('torchlight.theme', 'nord');
         config()->set('torchlight.cache', 'file');
 
@@ -176,16 +176,25 @@ class GenerateDocsCommand extends Command
                     $documentString = Str::after($documentString, '</h1>');
                 }
 
+                // Grab metadata
+                $metadata = [];
+                $metadataJsonPath = preg_replace('/.md$/i', ".json", $relativePath);
+                if ($disk->exists($metadataJsonPath) && $md = json_decode($disk->get($metadataJsonPath), true)) {
+                    $metadata = $md;
+                }
+
                 $treeData = [
                     'title' => $title,
+                    'seoTitle' => $relativePath === 'content/welcome.md' ? 'Twill CMS' : null,
                     'url' => $url,
                     'relativePath' => $this->withoutNumbers($relativePath),
                     'githubLink' => 'https://github.com/area17/twill/tree/3.x/docs/' . $relativePath,
                     'content' => $documentString,
                     'toc' => $tocRendered,
+                    'metadata' => $metadata,
                 ];
 
-                if (Str::contains($relativePath, 'index.md')) {
+                if (Str::contains($relativePath, 'index.md') || Str::contains($relativePath, 'welcome.md')) {
                     foreach ($treeData as $key => $value) {
                         Arr::set(
                             $navTree,

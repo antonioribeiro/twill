@@ -1,6 +1,6 @@
 {
   "name": "@area17/twill",
-  "version": "3.0.0-rc4",
+  "version": "3.0.2",
   "private": true,
   "scripts": {
     "inspect": "vue-cli-service inspect --mode production",
@@ -29,7 +29,7 @@
     "alpinejs": "^3.10.0",
     "axios": "^0.21.2",
     "core-js": "^3.9.1",
-    "cropperjs": "1.5.6",
+    "cropperjs": "^1.5.13",
     "date-fns": "1.29.0",
     "fine-uploader": "^5.16.2",
     "fine-uploader-wrappers": "^1.1.0",
@@ -47,7 +47,7 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
-    "@area17/a17-tailwind-plugins": "^3.7.0",
+    "@area17/a17-tailwind-plugins": "^3.7.2",
     "@babel/eslint-parser": "^7.17.0",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.8",

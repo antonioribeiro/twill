@@ -1,5 +1,5 @@
 <nav
-    class="sidebar w-3-cols xxl:w-2-cols bg-white sticky top-[80px] h-screen-minus-header pr-32 border-r-[1px] border-grey overflow-x-hidden overflow-y-auto"
+    class="sidebar w-3-cols xl:w-240 bg-primary sticky top-80 h-screen-minus-header pr-32 pb-16 border-r border-primary overflow-x-hidden overflow-y-auto"
     x-bind:inert="if (isMobile) {
     if (openNav) {
         return false
@@ -24,44 +24,64 @@
         <svg class="h-18 w-18" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><defs><style>.close-icon-line{fill:none;stroke-miterlimit:10;stroke-width:1.5px;}</style></defs><title>close_icon</title><line class="close-icon-line" x1="1" y1="1" x2="9" y2="9" stroke="currentColor"/><line class="close-icon-line" x1="9" y1="1" x2="1" y2="9" stroke="currentColor"/>
         </svg>
     </button>
-    <ul role="list">
-        @foreach ($tree as $key => $item)
-            @unless($key === '')
-                <li class="md:hidden">
-                    <a href="{{ $item['url'] }}" >{{ $item['title'] }}</a>
-                </li>
-            @endunless
-        @endforeach
-        <li class="mt-32">
-            <h2 class="f-doc-title strong">
-                {{ $tree[$currentSegment]['title'] ?? '' }}
-            </h2>
+    <ul role="list" class="flex flex-col flex-nowrap min-h-full py-32">
+        <li class="lg:hidden"><x-twilldocs::navLink url="/blog/" label="Blog" mobileNav="true" /></li>
+        <li class="mt-12 lg:hidden"><x-twilldocs::navLink url="/guides/" label="Guides" mobileNav="true" /></li>
+        <li class="mt-12 lg:hidden"><x-twilldocs::navLink url="/docs/" label="Docs" mobileNav="true" /></li>
 
-            @if (!empty($tree[$currentSegment]['items'] ?? []))
-                <ul class="core-list mt-30">
+        @if (!empty($tree[$currentSegment]['items'] ?? []))
+            <li class="my-40 pt-20 border-t border-t-primary lg:my-0 lg:pt-0 lg:border-t-0">
+                <h2 class="f-doc-title strong">
+                    {{ $tree[$currentSegment]['title'] ?? '' }}
+                </h2>
+
+                <ul class="core-list mt-30 f-sidebar subpixel-antialiased">
+                    @php
+                        $index = 0;
+                    @endphp
                     @foreach ($tree[$currentSegment]['items'] ?? [] as $item)
-                        @php $open = \Illuminate\Support\Str::betweenFirst(ltrim($item['url'], '/'), '/', '/') === \Illuminate\Support\Str::betweenFirst(ltrim($url, '/'), '/', '/'); @endphp
-                        <li class="relative mt-12" x-data="{ open: {{ $open ? 'true' : 'false' }} }">
-                            <div class="flex">
-                                <a class="inline pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block no-underline hover:text-purple @if ($open) text-purple font-medium no-underline @endif"
-                                    href="{{ $item['url'] ?? '#' }}">{{ $item['title'] ?? '' }}</a>
+                        @php
+                            $open = \Illuminate\Support\Str::betweenFirst(ltrim($item['url'], '/'), '/', '/') === \Illuminate\Support\Str::betweenFirst(ltrim($url, '/'), '/', '/');
+                            $index++;
+                        @endphp
+                        <li
+                            class="relative mt-12"
+                            x-data="{ open: {{ $open ? 'true' : 'false' }} }"
+                            :class="open ? 'is-open' : ''"
+                        >
+
+                            <div class="flex items-center">
+                                <a class="inline no-underline hover:text-link
+                                    @if ($open) text-link font-medium no-underline @endif"
+                                   href="{{ $item['url'] ?? '#' }}">
+                                    {{ $item['title'] ?? '' }}
+                                </a>
+
                                 @if (!empty($item['items'] ?? []))
-                                    <div
-                                        class="flex-1 cursor-pointer px-5 items-center flex"
-                                        x-on:click="open = !open">
-                                    </div>
+                                    <button class="accordion-trigger" x-on:click="open = !open" aria-label="expand"></button>
                                 @endif
                             </div>
                             @if (!empty($item['items'] ?? []))
-                                <ul class="@if ($open) block @else hidden @endif ml-24 mt-12"
-                                    x-bind:class="{ 'hidden': !open }">
+                                <ul class="overflow-hidden pl-[12px] {{!$open ? 'max-h-0' : ''}}"
+                                    x-ref="container{{$index}}"
+                                    x-bind:style="open ? 'max-height: ' + $refs.container{{$index}}.scrollHeight + 'px' : ''"
+                                    x-init="$nextTick(() => {
+                                        $refs.container{{$index}}.classList.add('duration-700')
+                                        if({{$open ? 'true' : 'false'}}){
+                                            $refs.container{{$index}}.classList.add('max-h-0')
+                                        }
+                                     })">
                                     @foreach ($item['items'] ?? [] as $item)
                                         @php $active = $url === $item['url']; @endphp
-                                        <li class="relative mt-8">
+                                        <li class="relative pt-12">
                                             <a
-                                              class="block w-full pl-3.5 before:pointer-events-none text-black no-underline hover:text-purple @if($active) font-medium text-purple @endif"
-                                              href="{{ $item['url'] ?? '#' }}">
-                                              {{ $item['title'] ?? '' }}
+                                                @class([
+                                                    'block w-full pl-3.5 before:pointer-events-none no-underline',
+                                                    'text-primary hover:text-link' => !$active,
+                                                    'text-link font-medium' => $active,
+                                                ])
+                                                href="{{ $item['url'] ?? '#' }}">
+                                                {{ $item['title'] ?? '' }}
                                             </a>
                                         </li>
                                     @endforeach
@@ -70,7 +90,11 @@
                         </li>
                     @endforeach
                 </ul>
-            @endif
-        </li>
+            </li>
+        @endif
+
+        <li class="mt-auto pt-20 border-t border-t-primary lg:hidden"><x-twilldocs::navLink url="/made" label="#MadeWithTwill" mobileNav="true" branded /></li>
+        <li class="mt-12 lg:hidden"><x-twilldocs::navLink url="https://demo.twill.io/" label="Demo" mobileNav="true" /></li>
+        <li class="mt-12 lg:hidden"><x-twilldocs::navLink url="https://discord.gg/cnWk7EFv8R" label="Chat" mobileNav="true" /></li>
     </ul>
 </nav>

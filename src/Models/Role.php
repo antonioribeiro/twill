@@ -31,15 +31,18 @@ class Role extends BaseModel implements Sortable, TwillModelContract
         'position',
     ];
 
-    protected $dates = [
-        'deleted_at',
-    ];
-
     public $checkboxes = ['published'];
 
     protected $casts = [
         'in_everyone_group' => 'boolean',
+        'deleted_at' => 'datetime'
     ];
+
+    public function __construct(array $attributes = [])
+    {
+        $this->table = config('twill.roles_table', 'roles');
+        parent::__construct($attributes);
+    }
 
     public function scopeAccessible($query): Builder
     {

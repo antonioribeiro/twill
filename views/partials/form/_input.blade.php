@@ -8,6 +8,7 @@
             @if ($required) required: true, @endif
             @if ($note) note: '{{ $note }}', @endif
             @if ($placeholder) placeholder: '{{ addslashes($placeholder) }}', @endif
+            @if ($direction) direction: '{{ $direction }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($disabled) disabled: true, @endif
             @if ($readOnly) readonly: true, @endif
@@ -15,8 +16,8 @@
             @if ($prefix) prefix: '{{ $prefix }}', @endif
             @if ($mask) mask: '{{ $mask }}', @endif
             @if ($inModal) inModal: true, @endif
-            @if ($min) min: {{$min}}, @endif
-            @if ($max) max: {{$max}}, @endif
+            @isset ($min) min: {{$min}}, @endisset
+            @isset ($max) max: {{$max}}, @endisset
             @if ($step) step: {{$step}}, @endif
             @if ($default)
                 initialValue: '{{ $default }}',
@@ -35,6 +36,7 @@
         @if ($required) :required="true" @endif
         @if ($note) note="{{ $note }}" @endif
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
+        @if ($direction) direction="{{ $direction }}" @endif
         @if ($maxlength) :maxlength="{{ $maxlength }}" @endif
         @if ($disabled) disabled @endif
         @if ($readOnly) readonly @endif
@@ -44,8 +46,8 @@
         @if ($prefix) prefix="{{ $prefix }}" @endif
         @if ($mask) mask="{{ $mask }}" @endif
         @if ($inModal) :in-modal="true" @endif
-        @if ($min) :min="{{$min}}" @endif
-        @if ($max) :max="{{$max}}" @endif
+        @isset ($min) :min="{{$min}}" @endisset
+        @isset ($max) :max="{{$max}}" @endisset
         @if ($step) step="{{$step}}" @endif
         @if ($default)
             :initial-value="'{{ $default }}'"

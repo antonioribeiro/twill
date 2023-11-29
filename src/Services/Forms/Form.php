@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Forms;
 
+use A17\Twill\Services\Forms\Contracts\CanHaveSubfields;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 
@@ -95,7 +96,7 @@ class Form extends Collection implements CanHaveSubfields
 
     public function hasSideForm(): bool
     {
-        return $this->sideForm && $this->sideForm->isNotEmpty();
+        return $this->sideForm && ($this->sideForm->isNotEmpty() || ($this->sideForm->fieldsets && $this->sideForm->fieldsets->isNotEmpty()));
     }
 
     public function renderBaseForm(): View

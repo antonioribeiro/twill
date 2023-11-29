@@ -21,15 +21,16 @@ class Input extends TwillFormComponent
         // Component specific
         public string $type = 'text',
         public ?string $placeholder = '',
+        public ?string $direction = 'auto',
         public ?int $maxlength = null,
         public ?int $rows = null,
         public ?string $ref = null,
         public ?string $onChange = null,
         public ?string $onChangeAttribute = null,
         public ?string $prefix = null,
-        public ?int $min = null,
-        public ?int $max = null,
-        public ?int $step = null,
+        public null|int|float $min = null,
+        public null|int|float $max = null,
+        public null|int|float $step = null,
         public ?string $mask = null,
     ) {
         parent::__construct(
