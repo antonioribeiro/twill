@@ -177,6 +177,7 @@
 
           },
           onClose: function (selectedDates, dateStr, instance) {
+            self.date = dateStr; // update Vue data manually as vue may not have updated self.date yet
             self.$nextTick(function () { // wait for the datepicker to properly update the UI
               self.$emit('input', self.date)
               self.$emit('close', self.date)
