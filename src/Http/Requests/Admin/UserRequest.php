@@ -28,12 +28,14 @@ class UserRequest extends Request
             case 'POST':
                 return [
                         'name' => 'required',
-                        'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email',
+                        // Case-insensitive unique email validation
+                        'email' => 'required|email|unique_email:' . config('twill.users_table', 'twill_users') . ',email',
                     ] + $this->getRoleValidator(['required']);
             case 'PUT':
                 return [
                         'name' => 'required',
-                        'email' => 'required|email|unique:' . config(
+                        // Case-insensitive unique email validation with exception for current user
+                        'email' => 'required|email|unique_email:' . config(
                             'twill.users_table',
                             'twill_users'
                         ) . ',email,' . $this->route('user'),

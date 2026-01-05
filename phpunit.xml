@@ -28,11 +28,13 @@
     <env name="SESSION_DRIVER" value="array"/>
     <env name="QUEUE_DRIVER" value="sync"/>
     <env name="MAIL_DRIVER" value="array"/>
-    <env name="DB_CONNECTION" value="mysql"/>
-    <env name="DB_DATABASE" value="twill_testing_3x"/>
+    <env name="DB_CONNECTION" value="mysql" force="false"/>
+    <env name="DB_HOST" value="127.0.0.1" force="false"/>
+    <env name="DB_PORT" value="3306" force="false"/>
+    <env name="DB_DATABASE" value="twill_testing_3x" force="false"/>
     <env name="LOG_CHANNEL" value="single"/>
-    <env name="DB_USERNAME" value="root"/>
-    <env name="DB_PASSWORD" value="root"/>
+    <env name="DB_USERNAME" value="root" force="false"/>
+    <env name="DB_PASSWORD" value="root" force="false"/>
   </php>
   <source>
     <include>

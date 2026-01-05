@@ -315,4 +315,31 @@ class User extends AuthenticatableContract implements TwillModelContract
     {
         return [];
     }
+
+    /**
+     * Override the default whereEmail scope to be case-insensitive.
+     *
+     * Laravel's dynamic where scopes (e.g., whereEmail) are case-sensitive by default.
+     * Since email addresses are case-insensitive per RFC 5321, we override this
+     * to ensure consistent behavior across all databases.
+     *
+     * @param Builder $query
+     * @param string $email
+     * @return Builder
+     */
+    public function scopeWhereEmail($query, string $email): Builder
+    {
+        return $query->whereRaw('LOWER(email) = ?', [strtolower($email)]);
+    }
+
+    /**
+     * Find a user by email address (case-insensitive).
+     *
+     * @param string $email
+     * @return static|null
+     */
+    public static function findByEmail(string $email): ?self
+    {
+        return static::whereEmail($email)->first();
+    }
 }

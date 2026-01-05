@@ -309,16 +309,50 @@ class LoginController extends Controller
         return array_merge($request->only($this->username(), 'password'), ['published' => 1]);
     }
 
+    /**
+     * Attempt to log the user into the application with case-insensitive email.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    protected function attemptLogin(Request $request)
+    {
+        $email = $request->input($this->username());
+        $password = $request->input('password');
+
+        // Find user with case-insensitive email lookup (via scopeWhereEmail override)
+        $user = twillModel('user')::whereEmail($email)
+            ->where('published', 1)
+            ->first();
+
+        if ($user && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
+            $this->guard()->login($user, $request->boolean('remember'));
+            return true;
+        }
+
+        return false;
+    }
+
     protected function autologin(): bool
     {
         if (! $this->autologinEnabled()) {
             return false;
         }
 
-        return $this->guard()->attempt([
-            $this->username() => $this->config->get('twill.autologin.email'),
-            'password' => $this->config->get('twill.autologin.password'),
-        ], false);
+        $email = $this->config->get('twill.autologin.email');
+        $password = $this->config->get('twill.autologin.password');
+
+        // Find user with case-insensitive email lookup (via scopeWhereEmail override)
+        $user = twillModel('user')::whereEmail($email)
+            ->where('published', 1)
+            ->first();
+
+        if ($user && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
+            $this->guard()->login($user, false);
+            return true;
+        }
+
+        return false;
     }
 
     protected function autologinEnabled(): bool

@@ -82,7 +82,8 @@ class ResetPasswordController extends Controller
 
     protected function sendResetResponse(Request $request, $response)
     {
-        $user = twillModel('user')::where('email', $request->input('email'))->first();
+        // Case-insensitive email lookup (via scopeWhereEmail override)
+        $user = twillModel('user')::whereEmail($request->input('email'))->first();
         if (! $user->isActivated()) {
             $user->registered_at = Carbon::now();
             $user->save();
@@ -156,12 +157,14 @@ class ResetPasswordController extends Controller
         $clearToken = DB::table($this->config->get('auth.passwords.twill_users.table', 'twill_password_resets'))->where('token', $token)->first();
 
         if ($clearToken) {
-            return twillModel('user')::where('email', $clearToken->email)->first();
+            // Case-insensitive email lookup (via scopeWhereEmail override)
+            return twillModel('user')::whereEmail($clearToken->email)->first();
         }
 
         foreach (DB::table($this->config->get('auth.passwords.twill_users.table', 'twill_password_resets'))->get() as $passwordReset) {
             if (Hash::check($token, $passwordReset->token)) {
-                return twillModel('user')::where('email', $passwordReset->email)->first();
+                // Case-insensitive email lookup (via scopeWhereEmail override)
+                return twillModel('user')::whereEmail($passwordReset->email)->first();
             }
         }
 

@@ -60,6 +60,23 @@ class ValidationServiceProvider extends ServiceProvider
 
             return true;
         });
+
+        // Case-insensitive unique email validation
+        // Usage: unique_email:table,column,except_id
+        Validator::extend('unique_email', function ($attribute, $value, $parameters, $validator) {
+            $table = $parameters[0] ?? config('twill.users_table', 'twill_users');
+            $column = $parameters[1] ?? 'email';
+            $exceptId = $parameters[2] ?? null;
+
+            $query = \Illuminate\Support\Facades\DB::table($table)
+                ->whereRaw('LOWER(' . $column . ') = ?', [strtolower($value)]);
+
+            if ($exceptId) {
+                $query->where('id', '!=', $exceptId);
+            }
+
+            return ! $query->exists();
+        }, 'The :attribute has already been taken.');
     }
 
     /**
